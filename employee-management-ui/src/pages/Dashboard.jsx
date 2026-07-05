@@ -1,54 +1,48 @@
+import { useEffect, useState } from "react";
 import DashboardCard from "../components/dashboard/DashboardCard";
-import {
-    Users,
-    Building2,
-    IndianRupee,
-    UserPlus
-} from "lucide-react";
+import { Users, Building2, UserCheck } from "lucide-react";
+import { getEmployees } from "../services/employeeService";
+import { getAllDepartments } from "../services/departmentService";
 
 export default function Dashboard() {
+    const [employees, setEmployees] = useState([]);
+    const [departments, setDepartments] = useState([]);
+
+    useEffect(() => {
+        Promise.all([getEmployees(), getAllDepartments()])
+            .then(([empRes, deptRes]) => {
+                setEmployees(empRes.data || []);
+                setDepartments(deptRes.data || []);
+            })
+            .catch(console.error);
+    }, []);
+
+    const activeCount = employees.filter(e => e.status === "Active").length;
 
     return (
-
         <div>
+            <h1 className="text-2xl font-semibold text-navy mb-6">Dashboard</h1>
 
-            <h1 className="text-4xl font-bold mb-8">
-                Dashboard
-            </h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <DashboardCard
-                    title="Employees"
-                    value="125"
-                    icon={<Users size={32} />}
-                    color="bg-blue-600"
+                    title="Total Employees"
+                    value={employees.length}
+                    icon={<Users size={24} className="text-teal" />}
+                    color="bg-teal-light"
                 />
-
                 <DashboardCard
                     title="Departments"
-                    value="8"
-                    icon={<Building2 size={32} />}
-                    color="bg-green-600"
+                    value={departments.length}
+                    icon={<Building2 size={24} className="text-teal" />}
+                    color="bg-teal-light"
                 />
-
                 <DashboardCard
-                    title="Payroll"
-                    value="₹18.5L"
-                    icon={<IndianRupee size={32} />}
-                    color="bg-purple-600"
+                    title="Active Employees"
+                    value={activeCount}
+                    icon={<UserCheck size={24} className="text-teal" />}
+                    color="bg-teal-light"
                 />
-
-                <DashboardCard
-                    title="New Hires"
-                    value="15"
-                    icon={<UserPlus size={32} />}
-                    color="bg-orange-500"
-                />
-
             </div>
-
         </div>
-
     );
 }

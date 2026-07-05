@@ -1,0 +1,65 @@
+package com.ems.hrms.service.impl;
+
+import com.ems.hrms.dto.DtoEmployee;
+import com.ems.hrms.exception.ExceptionEmployee;
+import com.ems.hrms.mapper.MapperEmployee;
+import com.ems.hrms.model.Employee;
+import com.ems.hrms.repository.RepositoryEmployee;
+import com.ems.hrms.service.ServiceEmployeeIn;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class ServiceEmployee implements ServiceEmployeeIn {
+    @Autowired
+    private RepositoryEmployee repositoryEmployee;
+
+
+    @Override
+    public DtoEmployee createEmployee(DtoEmployee dtoEmployee) {
+            Employee employee = MapperEmployee.mapTOEmployee(dtoEmployee);
+            Employee savedEmployee= repositoryEmployee.save(employee);
+            return MapperEmployee.mapToDtoEmployee(savedEmployee);
+    }
+
+    @Override
+    public DtoEmployee findById(int id) {
+        Employee employee=repositoryEmployee.findById(id).orElseThrow(
+                ()-> new ExceptionEmployee("The Employee is not founded by this give Id" +id));
+        return MapperEmployee.mapToDtoEmployee(employee);
+    }
+
+    @Override
+    public List<DtoEmployee> findAllEmployee() {
+         List<Employee> employees= repositoryEmployee.findAll();
+        return employees.stream().map(
+                (employee) -> MapperEmployee.mapToDtoEmployee(employee)).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public DtoEmployee updateEmployee(int id, DtoEmployee updatedemployee) {
+        Employee employee = repositoryEmployee.findById(id).orElseThrow(
+                () -> new ExceptionEmployee("The Employee is not exist or found by given id " + id));
+        employee.setFirstname(updatedemployee.getFirstname());
+        employee.setLastname(updatedemployee.getLastname());
+        employee.setEmail(updatedemployee.getEmail());
+        employee.setPhone(updatedemployee.getPhone());
+        employee.setDepartment(updatedemployee.getDepartment());
+        employee.setDesignation(updatedemployee.getDesignation());
+        employee.setSalary(updatedemployee.getSalary());
+        employee.setJoiningDate(updatedemployee.getJoiningDate());
+        employee.setStatus(updatedemployee.getStatus());
+        return MapperEmployee.mapToDtoEmployee(repositoryEmployee.save(employee));
+    }
+
+    @Override
+    public void deleteEmployee(int id) {
+        Employee employee=repositoryEmployee.findById(id).orElseThrow(()->new ExceptionEmployee("The Employee is not exist or found by given id"+id));
+        repositoryEmployee.delete(employee);
+    }
+
+}

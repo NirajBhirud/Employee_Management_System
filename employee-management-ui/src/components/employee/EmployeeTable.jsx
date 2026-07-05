@@ -31,8 +31,9 @@ export default function EmployeeTable({
 
                         <th className="px-6 py-4 text-left">ID</th>
                         <th className="text-left">First Name</th>
-                        <th className="text-left">Last Name</th>
-                        <th className="text-left">Email</th>
+<th className="text-left">Name</th>
+<th className="text-left">Email</th>
+<th className="text-left">Status</th>
                         <th className="text-center">Actions</th>
 
                     </tr>

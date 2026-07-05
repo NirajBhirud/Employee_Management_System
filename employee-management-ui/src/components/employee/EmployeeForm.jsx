@@ -1,9 +1,20 @@
 import { useEffect, useState } from "react";
 
+import Input from "../common/Input";
+import Button from "../common/Button";
+
+import { getAllDepartments } from "../../services/DepartmentService";
+
 const EMPTY_EMPLOYEE = {
     firstname: "",
     lastname: "",
-    email: ""
+    email: "",
+    phone: "",
+    department: "",
+    designation: "",
+    salary: "",
+    joiningDate: "",
+    status: "Active"
 };
 
 export default function EmployeeForm({
@@ -14,86 +25,223 @@ export default function EmployeeForm({
 
     const [employee, setEmployee] = useState(EMPTY_EMPLOYEE);
 
+    const [departments, setDepartments] = useState([]);
+
+    const [loadingDepartments, setLoadingDepartments] = useState(true);
+
     useEffect(() => {
+
         if (initialData) {
             setEmployee(initialData);
-        } else {
-            setEmployee(EMPTY_EMPLOYEE);
         }
+
     }, [initialData]);
 
+    useEffect(() => {
+
+        loadDepartments();
+
+    }, []);
+
+    async function loadDepartments() {
+
+        try {
+
+            const response = await getAllDepartments();
+
+            setDepartments(response.data);
+
+        } catch (error) {
+
+            console.error("Unable to load departments.", error);
+
+        } finally {
+
+            setLoadingDepartments(false);
+
+        }
+
+    }
+
     function handleChange(e) {
+
         const { name, value } = e.target;
 
         setEmployee(prev => ({
             ...prev,
             [name]: value
         }));
+
     }
 
     function handleSubmit(e) {
+
         e.preventDefault();
+
         onSubmit(employee);
+
     }
 
     return (
+
         <form
             onSubmit={handleSubmit}
-            className="bg-white shadow-lg rounded-xl p-8 max-w-2xl"
+            className="bg-white shadow-xl rounded-xl p-8"
         >
 
-            <div className="mb-5">
-                <label className="block mb-2 font-semibold">
-                    First Name
-                </label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                <input
-                    type="text"
+                <Input
+                    label="First Name"
                     name="firstname"
                     value={employee.firstname}
                     onChange={handleChange}
-                    className="w-full border rounded-lg p-3"
                     required
+                    placeholder="Enter first name"
                 />
-            </div>
 
-            <div className="mb-5">
-                <label className="block mb-2 font-semibold">
-                    Last Name
-                </label>
-
-                <input
-                    type="text"
+                <Input
+                    label="Last Name"
                     name="lastname"
                     value={employee.lastname}
                     onChange={handleChange}
-                    className="w-full border rounded-lg p-3"
-                    required
+                    placeholder="Enter last name"
                 />
-            </div>
 
-            <div className="mb-8">
-                <label className="block mb-2 font-semibold">
-                    Email
-                </label>
-
-                <input
+                <Input
+                    label="Email"
                     type="email"
                     name="email"
                     value={employee.email}
                     onChange={handleChange}
-                    className="w-full border rounded-lg p-3"
                     required
+                    placeholder="Enter email"
                 />
-            </div>
 
-            <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg"
-            >
-                {buttonText}
-            </button>
+                <Input
+                    label="Phone"
+                    name="phone"
+                    value={employee.phone}
+                    onChange={handleChange}
+                    placeholder="Enter phone number"
+                />
 
-        </form>
-    );
-}
+                <div>
+
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+
+                        Department
+
+                    </label>
+
+                    <select
+                        name="department"
+                        value={employee.department}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+
+                        <option value="">
+
+                            Select Department
+
+                        </option>
+
+                        {
+
+                            !loadingDepartments &&
+
+                            departments.map((department) => (
+
+                                <option
+                                    key={department.id}
+                                    value={department.departmentCode}
+                                >
+
+                                    {department.departmentName}
+
+                                </option>
+
+                            ))
+
+                        }
+
+                    </select>
+
+                </div>
+
+                <Input
+                    label="Designation"
+                    name="designation"
+                    value={employee.designation}
+                    onChange={handleChange}
+                    placeholder="Enter designation"
+                />
+
+                <Input
+                    label="Salary"
+                    type="number"
+                    name="salary"
+                    value={employee.salary}
+                    onChange={handleChange}
+                    placeholder="Enter salary"
+                />
+
+                <Input
+                    label="Joining Date"
+                    type="date"
+                    name="joiningDate"
+                    value={employee.joiningDate}
+                    onChange={handleChange}
+                />
+                                <div>
+
+                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+
+                                        Status
+
+                                    </label>
+
+                                    <select
+                                        name="status"
+                                        value={employee.status}
+                                        onChange={handleChange}
+                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    >
+
+                                        <option value="Active">
+
+                                            Active
+
+                                        </option>
+
+                                        <option value="Inactive">
+
+                                            Inactive
+
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                            <div className="flex justify-end mt-8">
+
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                >
+
+                                    {buttonText}
+
+                                </Button>
+
+                            </div>
+
+                        </form>
+
+                    );
+
+                }
