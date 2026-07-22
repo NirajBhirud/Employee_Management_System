@@ -5,7 +5,7 @@ import com.ems.hrms.dto.DtoEmployee;
 import java.util.List;
 
 public interface ServiceEmployeeIn {
-     DtoEmployee createEmployee(DtoEmployee dtoEmployee);
+    DtoEmployee createEmployee(DtoEmployee dtoEmployee);
 
     DtoEmployee findById(int id);
 
@@ -14,4 +14,6 @@ public interface ServiceEmployeeIn {
     DtoEmployee updateEmployee(int id, DtoEmployee updatedemployee);
 
     void deleteEmployee(int id);
+
+    List<DtoEmployee> findByDepartment(int departmentId);
 }

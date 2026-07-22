@@ -1,9 +1,12 @@
 package com.ems.hrms.service.impl;
 
 import com.ems.hrms.dto.DtoEmployee;
+import com.ems.hrms.exception.ExceptionDepartment;
 import com.ems.hrms.exception.ExceptionEmployee;
 import com.ems.hrms.mapper.MapperEmployee;
+import com.ems.hrms.model.Department;
 import com.ems.hrms.model.Employee;
+import com.ems.hrms.repository.DepartmentRepository;
 import com.ems.hrms.repository.RepositoryEmployee;
 import com.ems.hrms.service.ServiceEmployeeIn;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +20,23 @@ public class ServiceEmployee implements ServiceEmployeeIn {
     @Autowired
     private RepositoryEmployee repositoryEmployee;
 
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
 
     @Override
     public DtoEmployee createEmployee(DtoEmployee dtoEmployee) {
-            Employee employee = MapperEmployee.mapTOEmployee(dtoEmployee);
-            Employee savedEmployee= repositoryEmployee.save(employee);
-            return MapperEmployee.mapToDtoEmployee(savedEmployee);
+        Employee employee = MapperEmployee.mapTOEmployee(dtoEmployee);
+
+        if (dtoEmployee.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(dtoEmployee.getDepartmentId())
+                    .orElseThrow(() -> new ExceptionDepartment(
+                            "No department found with id " + dtoEmployee.getDepartmentId()));
+            employee.setDepartment(department);
+        }
+
+        Employee savedEmployee = repositoryEmployee.save(employee);
+        return MapperEmployee.mapToDtoEmployee(savedEmployee);
     }
 
     @Override
@@ -34,7 +48,7 @@ public class ServiceEmployee implements ServiceEmployeeIn {
 
     @Override
     public List<DtoEmployee> findAllEmployee() {
-         List<Employee> employees= repositoryEmployee.findAll();
+        List<Employee> employees= repositoryEmployee.findAll();
         return employees.stream().map(
                 (employee) -> MapperEmployee.mapToDtoEmployee(employee)).collect(Collectors.toList());
 
@@ -48,11 +62,18 @@ public class ServiceEmployee implements ServiceEmployeeIn {
         employee.setLastname(updatedemployee.getLastname());
         employee.setEmail(updatedemployee.getEmail());
         employee.setPhone(updatedemployee.getPhone());
-        employee.setDepartment(updatedemployee.getDepartment());
         employee.setDesignation(updatedemployee.getDesignation());
         employee.setSalary(updatedemployee.getSalary());
         employee.setJoiningDate(updatedemployee.getJoiningDate());
         employee.setStatus(updatedemployee.getStatus());
+
+        if (updatedemployee.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(updatedemployee.getDepartmentId())
+                    .orElseThrow(() -> new ExceptionDepartment(
+                            "No department found with id " + updatedemployee.getDepartmentId()));
+            employee.setDepartment(department);
+        }
+
         return MapperEmployee.mapToDtoEmployee(repositoryEmployee.save(employee));
     }
 
@@ -60,6 +81,13 @@ public class ServiceEmployee implements ServiceEmployeeIn {
     public void deleteEmployee(int id) {
         Employee employee=repositoryEmployee.findById(id).orElseThrow(()->new ExceptionEmployee("The Employee is not exist or found by given id"+id));
         repositoryEmployee.delete(employee);
+    }
+
+    @Override
+    public List<DtoEmployee> findByDepartment(int departmentId) {
+        return repositoryEmployee.findByDepartment_Id(departmentId).stream()
+                .map(MapperEmployee::mapToDtoEmployee)
+                .collect(Collectors.toList());
     }
 
 }

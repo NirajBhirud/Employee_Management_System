@@ -7,7 +7,8 @@ export default function EmployeeRow({ employee, onDelete }) {
     return (
         <tr className="border-b border-border hover:bg-slate-50">
             <td className="px-6 py-4 tabular text-text-muted">#{employee.id}</td>
-            <td>{employee.firstname} {employee.lastname}</td>
+            <td>{employee.firstname}</td>
+            <td>{employee.lastname}</td>
             <td>{employee.email}</td>
             <td>
                 <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${

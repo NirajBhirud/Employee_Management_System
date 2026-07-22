@@ -2,6 +2,9 @@ package com.ems.hrms.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(
         name = "departments",
@@ -27,6 +30,9 @@ public class Department {
 
     @Column(nullable = false)
     private String status;
+
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = false)
+    private List<Employee> employees = new ArrayList<>();
 
     public Department() {
     }
@@ -82,5 +88,13 @@ public class Department {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 }

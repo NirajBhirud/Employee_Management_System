@@ -8,6 +8,7 @@ import AddEmployee from "./pages/AddEmployee";
 import EditEmployee from "./pages/EditEmployee";
 import EmployeeDetails from "./pages/EmployeeDetails";
 import DepartmentPage from "./pages/DepartmentPage";
+import Attendance from "./pages/Attendance";
 import NotFound from "./pages/NotFound";
 
 export default function App() {
@@ -23,6 +24,8 @@ export default function App() {
                 <Route path="/employees" element={<Employees />} />
 
                 <Route path="/departments" element={<DepartmentPage />} />
+
+                <Route path="/attendance" element={<Attendance />} />
 
                 <Route path="/add" element={<AddEmployee />} />
 

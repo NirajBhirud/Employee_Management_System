@@ -25,7 +25,7 @@ public class ControllerEmployee {
         return new ResponseEntity<>(e, HttpStatus.CREATED);
     }
     @GetMapping("/{id}")
-        public ResponseEntity<DtoEmployee> findById(@PathVariable("id") int id){
+    public ResponseEntity<DtoEmployee> findById(@PathVariable("id") int id){
         DtoEmployee e=serviceEmployee.findById(id);
         return new ResponseEntity<>(e,HttpStatus.OK);
     }
@@ -44,6 +44,12 @@ public class ControllerEmployee {
     public ResponseEntity<String> deleteEmployee(@PathVariable("id") int id){
         serviceEmployee.deleteEmployee(id);
         return ResponseEntity.ok("This Employee is Deleted successfully");
+    }
+
+    @GetMapping("/department/{departmentId}")
+    public ResponseEntity<List<DtoEmployee>> findByDepartment(@PathVariable int departmentId){
+        List<DtoEmployee> employees = serviceEmployee.findByDepartment(departmentId);
+        return new ResponseEntity<>(employees, HttpStatus.OK);
     }
 
 }

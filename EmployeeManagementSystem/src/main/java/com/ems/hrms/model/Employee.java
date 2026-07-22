@@ -24,7 +24,9 @@ public class Employee {
     @Column(length = 15)
     private String phone;
 
-    private String department;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     private String designation;
 
@@ -42,7 +44,7 @@ public class Employee {
                     String lastname,
                     String email,
                     String phone,
-                    String department,
+                    Department department,
                     String designation,
                     Double salary,
                     LocalDate joiningDate,
@@ -100,11 +102,11 @@ public class Employee {
         this.phone = phone;
     }
 
-    public String getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public void setDepartment(String department) {
+    public void setDepartment(Department department) {
         this.department = department;
     }
 

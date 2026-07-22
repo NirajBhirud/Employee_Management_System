@@ -19,6 +19,11 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(ExceptionAttendance.class)
+    public ResponseEntity<Map<String, Object>> handleAttendanceConflict(ExceptionAttendance ex) {
+        return build(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidation(MethodArgumentNotValidException ex) {
         StringBuilder message = new StringBuilder();

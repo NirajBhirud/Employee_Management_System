@@ -10,7 +10,7 @@ const EMPTY_EMPLOYEE = {
     lastname: "",
     email: "",
     phone: "",
-    department: "",
+    departmentId: "",
     designation: "",
     salary: "",
     joiningDate: "",
@@ -32,7 +32,10 @@ export default function EmployeeForm({
     useEffect(() => {
 
         if (initialData) {
-            setEmployee(initialData);
+            setEmployee({
+                ...initialData,
+                departmentId: initialData.departmentId ?? ""
+            });
         }
 
     }, [initialData]);
@@ -78,7 +81,10 @@ export default function EmployeeForm({
 
         e.preventDefault();
 
-        onSubmit(employee);
+        onSubmit({
+            ...employee,
+            departmentId: employee.departmentId ? Number(employee.departmentId) : null
+        });
 
     }
 
@@ -135,8 +141,8 @@ export default function EmployeeForm({
                     </label>
 
                     <select
-                        name="department"
-                        value={employee.department}
+                        name="departmentId"
+                        value={employee.departmentId}
                         onChange={handleChange}
                         className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -155,7 +161,7 @@ export default function EmployeeForm({
 
                                 <option
                                     key={department.id}
-                                    value={department.departmentCode}
+                                    value={department.id}
                                 >
 
                                     {department.departmentName}
@@ -194,54 +200,54 @@ export default function EmployeeForm({
                     value={employee.joiningDate}
                     onChange={handleChange}
                 />
-                                <div>
+                <div>
 
-                                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
 
-                                        Status
+                        Status
 
-                                    </label>
+                    </label>
 
-                                    <select
-                                        name="status"
-                                        value={employee.status}
-                                        onChange={handleChange}
-                                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    >
+                    <select
+                        name="status"
+                        value={employee.status}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
 
-                                        <option value="Active">
+                        <option value="Active">
 
-                                            Active
+                            Active
 
-                                        </option>
+                        </option>
 
-                                        <option value="Inactive">
+                        <option value="Inactive">
 
-                                            Inactive
+                            Inactive
 
-                                        </option>
+                        </option>
 
-                                    </select>
+                    </select>
 
-                                </div>
+                </div>
 
-                            </div>
+            </div>
 
-                            <div className="flex justify-end mt-8">
+            <div className="flex justify-end mt-8">
 
-                                <Button
-                                    type="submit"
-                                    variant="primary"
-                                >
+                <Button
+                    type="submit"
+                    variant="primary"
+                >
 
-                                    {buttonText}
+                    {buttonText}
 
-                                </Button>
+                </Button>
 
-                            </div>
+            </div>
 
-                        </form>
+        </form>
 
-                    );
+    );
 
-                }
+}

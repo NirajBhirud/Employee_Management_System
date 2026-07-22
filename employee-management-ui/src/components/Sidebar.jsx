@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, UserPlus, Building2, X } from "lucide-react";
+import { LayoutDashboard, Users, UserPlus, Building2, CalendarCheck, X } from "lucide-react";
 
 export default function Sidebar({ open, onClose }) {
     const menuClass = ({ isActive }) =>
@@ -49,6 +49,9 @@ export default function Sidebar({ open, onClose }) {
                     </NavLink>
                     <NavLink to="/departments" className={menuClass}>
                         <Building2 size={18} /> Departments
+                    </NavLink>
+                    <NavLink to="/attendance" className={menuClass}>
+                        <CalendarCheck size={18} /> Attendance
                     </NavLink>
                     <NavLink to="/add" className={menuClass}>
                         <UserPlus size={18} /> Add Employee

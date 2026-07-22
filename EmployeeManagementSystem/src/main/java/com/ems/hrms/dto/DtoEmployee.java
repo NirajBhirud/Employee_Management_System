@@ -19,7 +19,9 @@ public class DtoEmployee {
     @Pattern(regexp = "^[0-9+\\-\\s]{7,15}$", message = "Phone number is invalid")
     private String phone;
 
-    private String department;
+    private Integer departmentId;
+
+    private String departmentName;
 
     private String designation;
 
@@ -38,7 +40,8 @@ public class DtoEmployee {
                        String lastname,
                        String email,
                        String phone,
-                       String department,
+                       Integer departmentId,
+                       String departmentName,
                        String designation,
                        Double salary,
                        LocalDate joiningDate,
@@ -49,7 +52,8 @@ public class DtoEmployee {
         this.lastname = lastname;
         this.email = email;
         this.phone = phone;
-        this.department = department;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
         this.designation = designation;
         this.salary = salary;
         this.joiningDate = joiningDate;
@@ -96,12 +100,20 @@ public class DtoEmployee {
         this.phone = phone;
     }
 
-    public String getDepartment() {
-        return department;
+    public Integer getDepartmentId() {
+        return departmentId;
     }
 
-    public void setDepartment(String department) {
-        this.department = department;
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
     }
 
     public String getDesignation() {

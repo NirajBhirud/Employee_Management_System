@@ -11,7 +11,7 @@ import {
     deleteEmployee,
 } from "../services/employeeService";
 
-import { getAllDepartments } from "../services/departmentService";
+import { getAllDepartments } from "../services/DepartmentService";
 
 export default function Employees() {
     const [employees, setEmployees] = useState([]);
@@ -79,11 +79,11 @@ export default function Employees() {
                 employee.email?.toLowerCase().includes(keyword) ||
                 employee.phone?.toLowerCase().includes(keyword) ||
                 employee.designation?.toLowerCase().includes(keyword) ||
-                employee.department?.toLowerCase().includes(keyword);
+                employee.departmentName?.toLowerCase().includes(keyword);
 
             const matchesDepartment =
                 selectedDepartment === "" ||
-                employee.department === selectedDepartment;
+                employee.departmentName === selectedDepartment;
 
             return matchesSearch && matchesDepartment;
         });
