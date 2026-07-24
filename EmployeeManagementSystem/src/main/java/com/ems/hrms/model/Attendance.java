@@ -32,17 +32,9 @@ public class Attendance {
     @Column(nullable = false)
     private String status;
 
-    public Attendance() {
-    }
+    private Boolean paid = true; // only meaningful when status = "Leave"; Present/Half-Day/Absent ignore this
 
-    public Attendance(int id, Employee employee, LocalDate date, LocalTime checkInTime,
-                      LocalTime checkOutTime, String status) {
-        this.id = id;
-        this.employee = employee;
-        this.date = date;
-        this.checkInTime = checkInTime;
-        this.checkOutTime = checkOutTime;
-        this.status = status;
+    public Attendance() {
     }
 
     public int getId() {
@@ -91,5 +83,13 @@ public class Attendance {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
     }
 }

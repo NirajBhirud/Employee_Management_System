@@ -17,4 +17,6 @@ public interface RepositoryAttendance extends JpaRepository<Attendance, Integer>
 
     List<Attendance> findByDate(LocalDate date);
 
+    void deleteByEmployee_Id(int employeeId);
+
 }

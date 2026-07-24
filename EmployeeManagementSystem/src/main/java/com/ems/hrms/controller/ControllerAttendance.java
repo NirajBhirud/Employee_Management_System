@@ -1,11 +1,13 @@
 package com.ems.hrms.controller;
 
 import com.ems.hrms.dto.DtoAttendance;
+import com.ems.hrms.security.AuthUtil;
 import com.ems.hrms.service.ServiceAttendanceIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -21,18 +23,24 @@ public class ControllerAttendance {
     @Autowired
     private ServiceAttendanceIn serviceAttendance;
 
+    @Autowired
+    private AuthUtil authUtil;
+
     @PostMapping("/check-in/{employeeId}")
     public ResponseEntity<DtoAttendance> checkIn(@PathVariable int employeeId) {
+        authUtil.verifyOwnEmployeeOrStaff(employeeId);
         DtoAttendance dto = serviceAttendance.checkIn(employeeId);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @PostMapping("/check-out/{employeeId}")
     public ResponseEntity<DtoAttendance> checkOut(@PathVariable int employeeId) {
+        authUtil.verifyOwnEmployeeOrStaff(employeeId);
         DtoAttendance dto = serviceAttendance.checkOut(employeeId);
         return ResponseEntity.ok(dto);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     @PostMapping("/mark")
     public ResponseEntity<DtoAttendance> markAttendance(@Valid @RequestBody DtoAttendance dtoAttendance) {
         DtoAttendance dto = serviceAttendance.markAttendance(dtoAttendance);
@@ -45,10 +53,12 @@ public class ControllerAttendance {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
 
+        authUtil.verifyOwnEmployeeOrStaff(employeeId);
         List<DtoAttendance> records = serviceAttendance.getAttendanceByEmployee(employeeId, startDate, endDate);
         return ResponseEntity.ok(records);
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('HR')")
     @GetMapping("/date/{date}")
     public ResponseEntity<List<DtoAttendance>> getAttendanceByDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
@@ -63,6 +73,7 @@ public class ControllerAttendance {
             @RequestParam int year,
             @RequestParam int month) {
 
+        authUtil.verifyOwnEmployeeOrStaff(employeeId);
         Map<String, Object> summary = serviceAttendance.getMonthlySummary(employeeId, year, month);
         return ResponseEntity.ok(summary);
     }

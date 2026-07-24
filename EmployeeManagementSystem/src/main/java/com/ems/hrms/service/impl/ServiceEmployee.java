@@ -7,10 +7,14 @@ import com.ems.hrms.mapper.MapperEmployee;
 import com.ems.hrms.model.Department;
 import com.ems.hrms.model.Employee;
 import com.ems.hrms.repository.DepartmentRepository;
+import com.ems.hrms.repository.RepositoryAttendance;
 import com.ems.hrms.repository.RepositoryEmployee;
+import com.ems.hrms.repository.RepositoryPayslip;
+import com.ems.hrms.repository.UserRepository;
 import com.ems.hrms.service.ServiceEmployeeIn;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +26,15 @@ public class ServiceEmployee implements ServiceEmployeeIn {
 
     @Autowired
     private DepartmentRepository departmentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RepositoryAttendance repositoryAttendance;
+
+    @Autowired
+    private RepositoryPayslip repositoryPayslip;
 
 
     @Override
@@ -78,8 +91,17 @@ public class ServiceEmployee implements ServiceEmployeeIn {
     }
 
     @Override
+    @Transactional
     public void deleteEmployee(int id) {
-        Employee employee=repositoryEmployee.findById(id).orElseThrow(()->new ExceptionEmployee("The Employee is not exist or found by given id"+id));
+        Employee employee = repositoryEmployee.findById(id).orElseThrow(
+                () -> new ExceptionEmployee("The Employee is not exist or found by given id " + id));
+
+        // Clean up dependent records first, so the FK constraints on
+        // users.employee_id / attendance.employee_id / payslip.employee_id don't block the delete.
+        userRepository.deleteByEmployee_Id(id);
+        repositoryAttendance.deleteByEmployee_Id(id);
+        repositoryPayslip.deleteByEmployee_Id(id);
+
         repositoryEmployee.delete(employee);
     }
 

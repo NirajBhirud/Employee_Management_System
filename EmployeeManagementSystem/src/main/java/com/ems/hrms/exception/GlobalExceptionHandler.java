@@ -3,6 +3,8 @@ package com.ems.hrms.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,9 +21,19 @@ public class GlobalExceptionHandler {
         return build(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
-    @ExceptionHandler(ExceptionAttendance.class)
-    public ResponseEntity<Map<String, Object>> handleAttendanceConflict(ExceptionAttendance ex) {
+    @ExceptionHandler({ExceptionAttendance.class, ExceptionPayroll.class, ExceptionAuth.class, ExceptionLeave.class})
+    public ResponseEntity<Map<String, Object>> handleConflict(RuntimeException ex) {
         return build(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentials(BadCredentialsException ex) {
+        return build(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+        return build(HttpStatus.FORBIDDEN, "You do not have permission to perform this action");
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -34,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
-        return build(HttpStatus.CONFLICT, "A record with the same unique field (e.g. email) already exists.");
+        return build(HttpStatus.CONFLICT, "This action conflicts with existing linked records.");
     }
 
     @ExceptionHandler(Exception.class)

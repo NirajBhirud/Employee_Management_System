@@ -11,7 +11,7 @@ import {
     deleteEmployee,
 } from "../services/employeeService";
 
-import { getAllDepartments } from "../services/DepartmentService";
+import { getAllDepartments } from "../services/departmentService";
 
 export default function Employees() {
     const [employees, setEmployees] = useState([]);
@@ -65,7 +65,7 @@ export default function Employees() {
             setSelectedEmployee(null);
         } catch (error) {
             console.error(error);
-            alert("Unable to delete employee.");
+            alert(error.response?.data?.message || "Unable to delete employee.");
         }
     }
 

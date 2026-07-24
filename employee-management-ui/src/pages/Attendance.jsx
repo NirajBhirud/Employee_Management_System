@@ -74,13 +74,13 @@ export default function Attendance() {
         }
     }
 
-    async function handleMarkLeave(employeeId) {
+    async function handleMarkStatus(employeeId, status) {
         setActioningId(employeeId);
         try {
-            await markAttendance({ employeeId, date: today, status: "Leave" });
+            await markAttendance({ employeeId, date: today, status });
             await loadData();
         } catch (err) {
-            alert(err.response?.data?.message || "Marking leave failed.");
+            alert(err.response?.data?.message || `Marking ${status} failed.`);
         } finally {
             setActioningId(null);
         }
@@ -126,7 +126,7 @@ export default function Attendance() {
                                         </span>
                                     </td>
                                     <td>
-                                        <div className="flex justify-center gap-2">
+                                        <div className="flex justify-center gap-2 flex-wrap">
                                             {!record && (
                                                 <Button
                                                     variant="primary"
@@ -147,11 +147,20 @@ export default function Attendance() {
                                             )}
                                             {!record && (
                                                 <Button
-                                                    variant="secondary"
+                                                    variant="warning"
                                                     disabled={busy}
-                                                    onClick={() => handleMarkLeave(employee.id)}
+                                                    onClick={() => handleMarkStatus(employee.id, "Leave")}
                                                 >
                                                     Mark Leave
+                                                </Button>
+                                            )}
+                                            {!record && (
+                                                <Button
+                                                    variant="danger"
+                                                    disabled={busy}
+                                                    onClick={() => handleMarkStatus(employee.id, "Absent")}
+                                                >
+                                                    Mark Absent
                                                 </Button>
                                             )}
                                         </div>
